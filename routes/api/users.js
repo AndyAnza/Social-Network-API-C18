@@ -1,0 +1,1 @@
+await users.find({});
