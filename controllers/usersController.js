@@ -52,4 +52,16 @@ module.exports = {
     }
   },
   //DELETE TO REMOVE USER BY ITS _id
+  async deleteUser(req, res) {
+    try {
+      const user = await Users.findOneAndDelete({ _id: req.params.userId });
+
+      if (!user) {
+        return res.status(404).json({ message: "No user with this id!" });
+      }
+      res.json({ message: "user successfully deleted!" });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };
