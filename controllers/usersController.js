@@ -44,7 +44,7 @@ module.exports = {
         { runValidators: true, new: true }
       );
       if (!user) {
-        return res.status(404).json({ message: "No user found with that id" });
+        return res.status(404).json({ message: "No user found with this id" });
       }
       res.json(user);
     } catch (err) {
@@ -57,13 +57,56 @@ module.exports = {
       const user = await Users.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
-        return res.status(404).json({ message: "No user with this id!" });
+        return res.status(404).json({ message: "No user with this id" });
       }
       res.json({ message: "user successfully deleted!" });
     } catch (err) {
       res.status(500).json(err);
     }
   },
+  //POST TO ADD A NEW FRIEND TO A USER'S FRIEND LIST
+  async addNewFriend(req, res) {
+    try {
+      const newFriend = await Users.findOne({ _id: req.params.friendId });
+      const user = await Users.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: newFriend._id } },
+        { new: true }
+      );
+      if (!user) {
+        return res.status(404).json({
+          message: "Found no user or friend with that ID",
+        });
+      }
+      res.json(`Added new Friend to User: ${user.username}!`);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  //DELETE TO REMOVE A FRIEND FROMA  USER´S FRIEND LIST
+  async deleteFriend(req, res) {
+    try {
+      const deleteFriend = await Users.findOneAndRemove({
+        _id: req.params.friendId,
+      });
+
+      if (!deleteFriend) {
+        return res.status(404).json({ message: "No friend with that id" });
+      }
+
+      const user = await Users.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "No user with that id" });
+      }
+
+      res.status(200).json({ message: "Friend deleted" });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };
-//POST TO ADD A NEW FRIEND TO A USER'S FRIEND LIST
-//DELETE TO REMOVE A FRIEND FROMA  USER´S FRIEND LIST
