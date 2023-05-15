@@ -11,13 +11,13 @@ const reactionSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const thoughtSchema = new mongoose.Schema({
+const thoughtSchema = new Schema({
   thoughtText: { type: String, required: true, min_length: 1, max_length: 280 },
   createdAt: { type: Date, default: Date.now },
   userName: { userSchema, type: String, required: true },
   reactions: [reactionSchema],
 });
 
-const thoughts = mongoose.model("thoughts", thoughtSchema);
+const thought = model("thought", thoughtSchema);
 
-module.exports = thoughts;
+module.exports = thought;
