@@ -13,7 +13,7 @@ module.exports = {
   //GET A SINGLE USER BY ITS _id AND POPULATE THOUGHT AND FRIEND DATA
   async getSingleUser(req, res) {
     try {
-      const user = await Users.findOne({ _id: req.params.userId })
+      const user = await Users.findById(req.params.userId)
         .select("-__v")
         .populate("thoughts");
 
@@ -23,7 +23,8 @@ module.exports = {
 
       res.json(user);
     } catch (err) {
-      res.status(500).json(err);
+      console.error(err); // Log the error message to the console
+      res.status(500).json({ error: "Internal server error" });
     }
   },
   //POST A NEW USER
